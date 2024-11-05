@@ -19,13 +19,13 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="CaloriasScreen">
+      <SelectionState runConfigName="MainActivity">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="UserProfileScreen">
+      <SelectionState runConfigName="PreviewPantallaPerfilUsuario">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="EditProfileScreen">
+      <SelectionState runConfigName="PantallaaIMC">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
