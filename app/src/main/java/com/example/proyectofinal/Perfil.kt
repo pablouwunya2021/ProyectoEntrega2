@@ -80,7 +80,11 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
         composable("Perfil") { PantallaPerfilUsuario(navController) }
         composable("Calorias") { PantallaCalorias() }
         composable("Scan") { PantallaGemini() }
-        composable("EditarPerfil") { PantallaEditarPerfil() } // Usa la pantalla existente
+        composable(route = "EditarPerfil") { PantallaEditarPerfil(navController = navController) }
+        composable(route = "IMC") { PantallaIMC(navController = navController) }
+        composable("PantallaSeleccionObjetivo") { PantallaSeleccionObjetivo() }
+
+        // Usa la pantalla existente
     }
 }
 

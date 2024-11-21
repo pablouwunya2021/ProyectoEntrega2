@@ -1,6 +1,5 @@
 package com.example.proyectofinal
 
-
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -9,7 +8,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,41 +21,48 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import com.google.firebase.firestore.FieldValue
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 class EditProfileScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
-                PantallaEditarPerfil()
-            }
+            val navController = rememberNavController()
+            NavGraph(navController = navController)
         }
     }
 }
 
+// Configuración de navegación
 @Composable
-fun PantallaEditarPerfil() {
+fun NavGraph(navController: NavHostController) {
+    NavHost(navController, startDestination = "PantallaEditarPerfil") {
+        composable("PantallaEditarPerfil") { PantallaEditarPerfil(navController) }
+        composable("IMC") { PantallaIMC(navController) } // Navegación a PantallaIMC
+    }
+}
+
+@Composable
+fun PantallaEditarPerfil(navController: NavHostController) {
     var nombre by remember { mutableStateOf("Pablo Cabrera") }
     var edad by remember { mutableStateOf(TextFieldValue("19")) }
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     var isCameraPermissionGranted by remember { mutableStateOf(false) }
 
-    // Solicitar permisos de cámara
     val requestCameraPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         isCameraPermissionGranted = isGranted
     }
 
-    // Iniciar la cámara y capturar la foto
     val openCamera = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { image ->
-        bitmap = image // Guardar la imagen capturada
+        bitmap = image
     }
 
-    // Comprobar permisos al abrir la pantalla
     if (ContextCompat.checkSelfPermission(LocalContext.current, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
         requestCameraPermission.launch(Manifest.permission.CAMERA)
     }
@@ -69,7 +74,6 @@ fun PantallaEditarPerfil() {
             .background(Color(0xFFEFEFEF)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Sección de la cámara
         Box(
             modifier = Modifier
                 .size(120.dp)
@@ -85,9 +89,8 @@ fun PantallaEditarPerfil() {
                     modifier = Modifier.fillMaxSize()
                 )
             } ?: run {
-                // Aquí puedes mostrar un ícono de cámara si no hay imagen
                 Image(
-                    painter = painterResource(id = R.drawable.camara), // Cambia esto a tu ícono de cámara
+                    painter = painterResource(id = R.drawable.camara),
                     contentDescription = "Icono de cámara"
                 )
             }
@@ -95,7 +98,6 @@ fun PantallaEditarPerfil() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para tomar foto
         Button(
             onClick = {
                 if (isCameraPermissionGranted) {
@@ -111,7 +113,6 @@ fun PantallaEditarPerfil() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo de texto para el nombre
         TextField(
             value = nombre,
             onValueChange = { nombre = it },
@@ -121,12 +122,11 @@ fun PantallaEditarPerfil() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Campo de texto para la edad (solo números)
         TextField(
             value = edad,
             onValueChange = {
                 if (it.text.all { char -> char.isDigit() }) {
-                    edad = it // Permitir solo números
+                    edad = it
                 }
             },
             label = { Text("Edad") },
@@ -135,9 +135,9 @@ fun PantallaEditarPerfil() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para calcular IMC
+        // Botón para navegar a PantallaIMC
         Button(
-            onClick = { /* Acción para volver a calcular el IMC */ },
+            onClick = { navController.navigate("IMC") },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Volver a calcular el IMC")
@@ -145,7 +145,6 @@ fun PantallaEditarPerfil() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Botón para guardar cambios
         Button(
             onClick = { /* Acción para guardar cambios */ },
             modifier = Modifier.fillMaxWidth()
@@ -155,22 +154,16 @@ fun PantallaEditarPerfil() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Botón para deshacer cambios
         Button(
             onClick = { /* Acción para deshacer cambios */ },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent) // Fondo transparente
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
         ) {
             Text(text = "Deshacer cambios", color = Color.Red)
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewPantallaEditarPerfil() {
-    MaterialTheme {
-        PantallaEditarPerfil()
-    }
-}
+
+
 

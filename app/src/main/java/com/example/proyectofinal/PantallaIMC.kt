@@ -10,24 +10,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlin.math.pow
 
 class PantallaaIMC : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
-                PantallaIMC()
-            }
+            val navController = rememberNavController()
+            PantallaIMC(navController = navController)
         }
     }
 }
 
 @Composable
-fun PantallaIMC() {
+fun PantallaIMC(navController: NavController) {
     var peso by remember { mutableStateOf("") }
     var altura by remember { mutableStateOf("") }
     var edad by remember { mutableStateOf("") }
@@ -52,7 +54,7 @@ fun PantallaIMC() {
             value = peso,
             onValueChange = { peso = it },
             label = { Text("Peso (kg)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number) // Solo números
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
         // Campo de entrada de altura
@@ -60,7 +62,7 @@ fun PantallaIMC() {
             value = altura,
             onValueChange = { altura = it },
             label = { Text("Altura (cm)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number) // Solo números
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
         // Campo de entrada de edad
@@ -68,7 +70,7 @@ fun PantallaIMC() {
             value = edad,
             onValueChange = { edad = it },
             label = { Text("Edad") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number) // Solo números
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
         // Botón para abrir el diálogo de selección de nivel de actividad
@@ -131,9 +133,21 @@ fun PantallaIMC() {
                 "Sobrepeso" -> Image(painter = painterResource(id = R.drawable.homero), contentDescription = "Sobrepeso")
                 "Obesidad" -> Image(painter = painterResource(id = R.drawable.bart), contentDescription = "Obesidad")
             }
+
+            // Botón "Cambiar de objetivo" que aparece después del cálculo de IMC
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    navController.navigate("PantallaSeleccionObjetivo")
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Yellow)
+            ) {
+                Text("Cambiar de objetivo?")
+            }
         }
     }
 }
+
 
 
 
